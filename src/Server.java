@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 
+
 public class Server {
     // The port variable is the same number as the port used by the Generator
     public static final int PORT = 7789;
@@ -28,13 +29,14 @@ public class Server {
                 while (nextline){
                     input = reader.readLine();
                     if(!input.equals(null)){
-                        //checks if the input is not equal to the string
-                        if(!input.equals("<?xml version=\"1.0\"?>")){
-                            input = reader.readLine();
-                            System.out.println(input);
-                        }
-
-
+                        System.out.println(input);
+//                        //checks if the input is not equal to the string
+//                        if(!input.equals("<?xml version=\"1.0\"?>")){
+//                            input = reader.readLine();
+//                            System.out.println(input);
+//                        }
+//
+//
                     }
                 }
                 nextline = false;
