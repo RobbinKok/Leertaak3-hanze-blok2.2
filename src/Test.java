@@ -11,7 +11,8 @@ public class Test {
 
         Measurement measurement = new Measurement(
                 10010,
-                LocalDateTime.now(),
+               "biem",
+               "biem",
                 1.0,
                 2.0,
                 3.0,
