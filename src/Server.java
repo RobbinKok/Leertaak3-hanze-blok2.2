@@ -1,6 +1,6 @@
 import java.io.*;
 import java.net.*;
-
+import java.util.concurrent.*;
 
 public class Server {
     // The port variable is the same number as the port used by the Generator
@@ -10,9 +10,11 @@ public class Server {
 
     ServerSocket serverSocket;
     DB_connect db;
+    ThreadPoolExecutor executor;
 
 
     public Server() throws IOException {
+        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(800);
         serverSocket = new ServerSocket(PORT);
         this.db = new DB_connect();
         System.out.println("New server started");
@@ -22,6 +24,7 @@ public class Server {
             connection = serverSocket.accept();
             System.out.println("New connection");
             Worker worker = new Worker("test", connection, db);
+            executor.execute(worker);
             worker.start();
         }
     }
