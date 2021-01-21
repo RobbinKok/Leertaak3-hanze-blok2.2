@@ -1,7 +1,6 @@
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import org.json.*;
 
 import java.time.*;
 
@@ -14,13 +13,21 @@ import java.util.ArrayList;
 
 public class WebServer {
 
+    private DB_connect db;
+    private HttpServer server;
+
     public WebServer(DB_connect db) throws IOException {
         this.db = db;
         this.server = HttpServer.create(new InetSocketAddress(8500), 0);
     }
 
     private static void handleRequest(HttpExchange exchange) throws IOException {
-        String response = "Dikke webserver bouwen is niet FUUNN!!! Dikke lul";
+        String response = "";
+        try {
+            response = handleResponse(exchange);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         exchange.sendResponseHeaders(200, response.getBytes().length);//response code and length
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
@@ -63,14 +70,10 @@ public class WebServer {
         URI requestURI = httpExchange.getRequestURI();
         String request = requestURI.getPath();
         DB_connect db = new DB_connect();
-        //todo: edit toString() for each model (richard)
         switch (request)
         {
             case "/station":
-                //ArrayList<Station> stations = (ArrayList<Station>) Station.get(db);
-                request = "Stations shit";
-                //return new JSONArray(stations).toString();
-
+                return new JSONConverter(Station.get(db)).toString();
             case "/login":
                 break;
 

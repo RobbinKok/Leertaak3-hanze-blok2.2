@@ -32,12 +32,11 @@ public class Station {
 
 
 
-    public static List<Station> get(DB_connect db) throws SQLException {
+    public static ArrayList<Station> get(DB_connect db) throws SQLException {
         ArrayList<Station> stations = new ArrayList<>();
         db.query("SELECT * FROM `stations`");
 
         ResultSet rs = db.getResult();
-
         while (rs.next()) {
             Station station = new Station(rs.getInt("stn"), rs.getString("name"), rs.getString("country"), rs.getDouble("latitude"), rs.getDouble("longitude"), rs.getDouble("elevation"));
             stations.add(station);
@@ -49,13 +48,13 @@ public class Station {
 
     @Override
     public String toString() {
-        return "Station{" +
-                "stn=" + stn +
-                ", name='" + name + '\'' +
-                ", country='" + country + '\'' +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
-                ", elevation=" + elevation +
+        return "{" +
+                "\"stn\":\"" + stn + '"' +
+                ", \"name\":\"" + name + '"' +
+                ", \"country\":\"" + country + '"' +
+                ", \"latitude\":" + latitude +
+                ", \"longitude\":" + longitude +
+                ", \"elevation\":" + elevation +
                 '}';
     }
 }

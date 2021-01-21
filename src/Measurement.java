@@ -2,6 +2,7 @@ import org.w3c.dom.Element;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Measurement {
 
@@ -108,6 +109,10 @@ public class Measurement {
         pstmt.setInt(13, this.wnddir);
 
         pstmt.execute();
+    }
+
+    public static ArrayList<Measurement> get(DB_connect db_connect, String conditions) {
+        return new ArrayList<>();
     }
 
     @Override
