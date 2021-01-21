@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.net.URI;
+import java.util.ArrayList;
 
 public class WebServer {
 
@@ -61,37 +62,31 @@ public class WebServer {
     public static String handleResponse(HttpExchange httpExchange) throws IOException, SQLException {
         URI requestURI = httpExchange.getRequestURI();
         String request = requestURI.getPath();
+        DB_connect db = new DB_connect();
+        //todo: edit toString() for each model (richard)
+        switch (request)
+        {
+            case "/station":
+                //ArrayList<Station> stations = (ArrayList<Station>) Station.get(db);
+                request = "Stations shit";
+                //return new JSONArray(stations).toString();
+
+            case "/login":
+                break;
+
+            case "/measurements":
+                Measurement.get(db, "");
+                break;
+
+            case "/measurements/top-ten-hum":
+                break;
+
+            default:
+
+        }
+
+        db.close();
         return request;
-//        switch (request)
-//        {
-//            case "station":
-//                Station.get(this.db);
-////                String response = Station.get(this.db).toString();
-//                String response = "Stations shit";
-//                httpExchange.sendResponseHeaders(200, response.getBytes().length);//response code and length
-//                OutputStream os = httpExchange.getResponseBody();
-//                os.write(response.getBytes());
-//                os.close();
-//                break;
-//
-//            case "login":
-//
-//                break;
-//
-//            case "measurements":
-//                Measurement.get(this.db, "");
-//                break;
-//
-//            case "measurements/top-ten-hum":
-//                LocalDate date = LocalDate.now();
-//                //Goede query voor het selecten van van temperaturen
-//                //TODO: Dag limit doen
-//                this.db.query("SELECT * FROM measurement ORDER BY temperature DESC LIMIT 10 WHERE date BETWEEN " + date + " AND " + "");
-//                break;
-//
-//            default:
-//
-//        }
     }
 
     /*private static void printRequestInfo(HttpExchange exchange) {

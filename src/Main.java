@@ -10,7 +10,8 @@ public class Main {
             // todo: thread aanmaken voor Server en voor Webserver zodat het tegelijk kan runnen.
             //new Server();
             WebServer webServer = new WebServer(db);
-            webServer.addRequest("GET", "/stations");
+            webServer.addRequest("GET", "/");
+            webServer.addRequest("GET", "/station");
             webServer.addRequest("POST", "/login");
             webServer.start();
 
