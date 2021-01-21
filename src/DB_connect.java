@@ -7,7 +7,7 @@ class DB_connect {
 
     public DB_connect() {
         try {
-            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/unwdmi?useSSL=false", "root", "root");
+            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:8889/unwdmi?useSSL=false", "root", "root");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -21,6 +21,10 @@ class DB_connect {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public void close() throws SQLException {
+        this.connection.close();
     }
 
     public PreparedStatement prepareQuery(String query) throws SQLException {
