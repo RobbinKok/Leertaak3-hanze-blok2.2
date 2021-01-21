@@ -13,10 +13,10 @@ public class Server {
     ThreadPoolExecutor executor;
 
 
-    public Server() throws IOException {
+    public Server(DB_connect db) throws IOException {
         executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(800);
         serverSocket = new ServerSocket(PORT);
-        this.db = new DB_connect();
+        this.db = db;
         System.out.println("New server started");
 
 

@@ -4,11 +4,11 @@ import java.io.IOException;
 
 public class WebServer {
 
-    public WebServer()  throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress("localhost",8001),0);
-
-
-
+    public WebServer() throws IOExc
+        HttpServer server = HttpServer.create(new InetSocketAddress(8500), 0);
+        HttpContext context = server.createContext("/");
+        context.setHandler(WebServer::handleRequest);
+        server.start();
     }
 
 
