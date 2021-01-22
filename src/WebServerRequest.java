@@ -35,6 +35,9 @@ public class WebServerRequest {
                 case "/stations":
                     result = new JSONConverter(Station.get(db_connect)).toString();
                     break;
+                case "/measurements":
+                    result = new JSONConverter(Measurement.get(db_connect)).toString();
+                    break;
                 default:
                     result = "404";
                     break;

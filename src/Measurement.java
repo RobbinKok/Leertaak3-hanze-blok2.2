@@ -1,5 +1,6 @@
 import org.w3c.dom.Element;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -72,6 +73,7 @@ public class Measurement implements Model {
         this.wnddir = Integer.parseInt(this.getTextFromElement(WNDDIR));
     }
 
+
     private String getTextFromElement(String prefix) {
         String result = element.getElementsByTagName(prefix).item(0).getTextContent();
         return result.isEmpty() ? "0" : result;
@@ -118,12 +120,21 @@ public class Measurement implements Model {
 
     /**
      * TODO: GET ALL MEASUREMENTS
-     * @param db_connect
+     * @param db
      * @param conditions
      * @return
      */
-    public static ArrayList<Measurement> get(DB_connect db_connect, String conditions) {
-        return new ArrayList<>();
+    public static ArrayList<Measurement> get(DB_connect db) throws SQLException {
+        ArrayList<Measurement> measurements = new ArrayList<>();
+        db.query("SELECT * FROM `measurement`");
+
+        ResultSet rs = db.getResult();
+        while (rs.next()){
+            Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
+            measurements.add(measurement);
+
+        }
+        return measurements;
     }
 
     /**
@@ -132,21 +143,21 @@ public class Measurement implements Model {
      */
     @Override
     public String toString() {
-        return "Measurement{" +
-                "station_stn=" + station_stn +
-                ", date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                ", temperature=" + temperature +
-                ", dew_point=" + dew_point +
-                ", air_pressure_on_station_level=" + air_pressure_on_station_level +
-                ", air_pressure_on_sea_level=" + air_pressure_on_sea_level +
-                ", visibility=" + visibility +
-                ", wind_speed=" + wind_speed +
-                ", rainfall=" + rainfall +
-                ", snow=" + snow +
-                ", frshtt=" + frshtt +
-                ", cldc=" + cldc +
-                ", wnddir=" + wnddir +
+        return "{" +
+                "\"station_stn\":\"" + station_stn + '"' +
+                ", \"date\":\"'" + date + '\'' + '"' +
+                ", \"time\":\"'" + time + '\'' + '"' +
+                ", \"temperature\":" + temperature +
+                ", \"dew_point\":" + dew_point +
+                ", \"air_pressure_on_station_level\":" + air_pressure_on_station_level +
+                ", \"air_pressure_on_sea_level\":" + air_pressure_on_sea_level +
+                ", \"visibility\":" + visibility +
+                ", \"wind_speed\":" + wind_speed +
+                ", \"rainfall\":" + rainfall +
+                ", \"snow\":" + snow +
+                ", \"frshtt\":" + frshtt +
+                ", \"cldc\":" + cldc +
+                ", \"wnddir\":" + wnddir +
                 '}';
     }
 
@@ -158,6 +169,6 @@ public class Measurement implements Model {
      */
     @Override
     public Model convertFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Measurement();
+        return new Measurement(resultSet.getInt("station_stn"), resultSet.getString("date"), resultSet.getDouble("temperature"),resultSet.getDouble("dew_point"),resultSet.getDouble("air_pressure_on_station_level"),resultSet.getDouble("air_pressure_on_sea_level"),resultSet.getDouble("visibility"),resultSet.getDouble("wind_speed"),resultSet.getDouble("rainfall"),resultSet.getDouble("snow"),resultSet.getInt("frshtt"),resultSet.getDouble("cldc"),resultSet.getInt("wnddir"));
     }
 }
