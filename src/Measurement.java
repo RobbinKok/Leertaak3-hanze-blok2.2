@@ -1,10 +1,11 @@
 import org.w3c.dom.Element;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Measurement {
+public class Measurement implements Model {
 
     private static String STATION_STN = "STN";
     private static String DATE = "DATE";
@@ -51,6 +52,8 @@ public class Measurement {
 
     private Element element;
 
+    public Measurement() { }
+
     public Measurement(Element element) {
         this.element = element;
         this.station_stn = Integer.parseInt(this.getTextFromElement(STATION_STN));
@@ -73,6 +76,8 @@ public class Measurement {
         String result = element.getElementsByTagName(prefix).item(0).getTextContent();
         return result.isEmpty() ? "0" : result;
     }
+
+
 
     public Measurement(int station_stn, String date, String time, Double temperature, Double dew_point, Double air_pressure_on_station_level, Double air_pressure_on_sea_level, Double visibility, Double wind_speed, Double rainfall, Double snow, int frshtt, Double cldc, int wnddir) {
         this.station_stn = station_stn;
@@ -111,10 +116,20 @@ public class Measurement {
         pstmt.execute();
     }
 
+    /**
+     * TODO: GET ALL MEASUREMENTS
+     * @param db_connect
+     * @param conditions
+     * @return
+     */
     public static ArrayList<Measurement> get(DB_connect db_connect, String conditions) {
         return new ArrayList<>();
     }
 
+    /**
+     * TODO: MAKE VALID JSON OBJECT
+     * @return
+     */
     @Override
     public String toString() {
         return "Measurement{" +
@@ -133,5 +148,16 @@ public class Measurement {
                 ", cldc=" + cldc +
                 ", wnddir=" + wnddir +
                 '}';
+    }
+
+    /**
+     * TODO: IMPLEMENT
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public Model convertFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Measurement();
     }
 }

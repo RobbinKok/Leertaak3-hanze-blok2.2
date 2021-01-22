@@ -11,6 +11,7 @@ public class Main {
             WebServer webServer = new WebServer(db);
             webServer.addRequest("GET", "/");
             webServer.addRequest("GET", "/stations");
+            webServer.addRequest("GET", "/measurements");
             webServer.addRequest("POST", "/login");
             webServer.start();
 

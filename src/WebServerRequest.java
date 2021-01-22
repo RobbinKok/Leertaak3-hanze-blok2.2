@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class WebServerRequest {
 
-    private String method;
+    private String method; // voor later gebruik
     private String url;
 
     public WebServerRequest(String method, String url) {
@@ -17,29 +17,32 @@ public class WebServerRequest {
     }
 
     public void handleRequest(HttpExchange httpExchange) throws IOException, SQLException {
-        String response = this.result();
+        String response = this.result(httpExchange);
         httpExchange.sendResponseHeaders(200, response.getBytes().length);//response code and length
         OutputStream os = httpExchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
     }
 
-    private String result() throws SQLException {
+    private String result(HttpExchange httpExchange) throws SQLException {
         String result = "";
         DB_connect db_connect = new DB_connect();
-        if (this.method.equals("GET")) {
+        if (httpExchange.getRequestMethod().equals("GET")) {
             switch (url) {
+                // in deze switch kunnen er nieuwe urls worden toegevoegd
+                // vergeet niet eerst add request te doen op de webserver
+                // belangrijk: HIER NIET QUERYS NEER GOOIEN
                 case "/stations":
-                    result =  new JSONConverter(Station.get(db_connect)).toString();
+                    result = new JSONConverter(Station.get(db_connect)).toString();
                     break;
                 default:
                     result = "404";
                     break;
             }
-        } else if (this.method.equals("POST")) {
+        } else if (httpExchange.getRequestMethod().equals("POST")) {
             switch (url) {
                 case "/login":
-                    // todo: create login
+                    // todo: create login (richard)
                     result = "success";
                     break;
                 default:

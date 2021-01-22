@@ -5,11 +5,8 @@ import com.sun.net.httpserver.HttpServer;
 import java.time.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
-import java.net.URI;
-import java.util.ArrayList;
 
 public class WebServer {
     private HttpServer server;

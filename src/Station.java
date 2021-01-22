@@ -3,7 +3,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Station {
+public class Station implements Model{
 
     public int stn;
 
@@ -31,14 +31,13 @@ public class Station {
     }
 
 
-
     public static ArrayList<Station> get(DB_connect db) throws SQLException {
         ArrayList<Station> stations = new ArrayList<>();
         db.query("SELECT * FROM `stations`");
 
         ResultSet rs = db.getResult();
         while (rs.next()) {
-            Station station = new Station(rs.getInt("stn"), rs.getString("name"), rs.getString("country"), rs.getDouble("latitude"), rs.getDouble("longitude"), rs.getDouble("elevation"));
+            Station station = (Station) new Station().convertFromResultSet(rs);
             stations.add(station);
         }
 
@@ -56,5 +55,10 @@ public class Station {
                 ", \"longitude\":" + longitude +
                 ", \"elevation\":" + elevation +
                 '}';
+    }
+
+    @Override
+    public Model convertFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Station(resultSet.getInt("stn"), resultSet.getString("name"), resultSet.getString("country"), resultSet.getDouble("latitude"), resultSet.getDouble("longitude"), resultSet.getDouble("elevation"));
     }
 }
