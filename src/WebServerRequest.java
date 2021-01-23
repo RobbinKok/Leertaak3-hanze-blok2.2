@@ -38,6 +38,12 @@ public class WebServerRequest {
                 case "/measurements":
                     result = new JSONConverter(Measurement.get(db_connect)).toString();
                     break;
+                case "/hum":
+                    result = new JSONConverter(Measurement.getHum(db_connect)).toString();
+                    break;
+                case "/station-data":
+                    result = new JSONConverter(Measurement.getWeatherStationData(db_connect)).toString();
+                    break;
                 default:
                     result = "404";
                     break;

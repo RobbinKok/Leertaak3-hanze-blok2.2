@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Measurement implements Model {
+public class Measurement implements Model{
 
     private static String STATION_STN = "STN";
     private static String DATE = "DATE";
@@ -120,8 +120,8 @@ public class Measurement implements Model {
 
     /**
      * TODO: GET ALL MEASUREMENTS
+     *
      * @param db
-     * @param conditions
      * @return
      */
     public static ArrayList<Measurement> get(DB_connect db) throws SQLException {
@@ -134,6 +134,49 @@ public class Measurement implements Model {
             measurements.add(measurement);
 
         }
+        return measurements;
+    }
+
+    public static ArrayList<Measurement> getHum(DB_connect db) throws SQLException {
+        ArrayList<Measurement> measurements = new ArrayList<>();
+        db.query("SELECT * FROM `measurement` ORDER BY `dew_point` DESC LIMIT 10 ");
+
+        ResultSet rs = db.getResult();
+        while (rs.next()) {
+            System.out.println(rs.getMetaData().getColumnTypeName(3));
+            //Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
+       //     measurement.setStation(new Station(rs.getObject("station")));
+            //measurements.add(measurement);
+        }
+
+        return measurements;
+    }
+
+    public static ArrayList<Measurement>getWeatherStationData(DB_connect db) throws SQLException {
+        ArrayList<Measurement> measurements = new ArrayList<>();
+        db.query("SELECT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed FROM measurement JOIN stations ON stations.stn = measurement.station_stn LIMIT 5 ");
+
+        ResultSet rs = db.getResult();
+
+
+        while (rs.next()) {
+            //System.out.println(rs.getMetaData().getColumnCount());
+            Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
+            measurements.add(measurement);
+        }
+        return measurements;
+    }
+
+    public static ArrayList<Measurement>getWind(DB_connect db) throws SQLException {
+        ArrayList<Measurement> measurements = new ArrayList<>();
+        db.query("");
+
+        ResultSet rs = db.getResult();
+        while (rs.next()) {
+            //Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
+            //measurements.add(measurement);
+        }
+
         return measurements;
     }
 
@@ -160,6 +203,7 @@ public class Measurement implements Model {
                 ", \"wnddir\":" + wnddir +
                 '}';
     }
+
 
     /**
      * TODO: IMPLEMENT

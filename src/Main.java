@@ -12,6 +12,8 @@ public class Main {
             webServer.addRequest("GET", "/");
             webServer.addRequest("GET", "/stations");
             webServer.addRequest("GET", "/measurements");
+            webServer.addRequest("GET", "/hum");
+            webServer.addRequest("GET", "/station-data");
             webServer.addRequest("POST", "/login");
             webServer.start();
 

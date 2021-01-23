@@ -12,6 +12,7 @@ public class Test {
         Measurement measurement = new Measurement(
                 10010,
                "biem",
+               "PENIS",
                1.5,
                 2.0,
                 3.0,
