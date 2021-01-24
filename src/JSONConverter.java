@@ -15,10 +15,9 @@ public class JSONConverter {
         for (int i = 0; i < arrayList.size(); i++)
         {
             stringBuilder.append(arrayList.get(i));
-            stringBuilder.append(i < arrayList.size() - 1 ? "," : "");
+            stringBuilder.append(i < arrayList.size() - 1 ? "," : "]");
         }
 
-        stringBuilder.append("]");
         return stringBuilder.toString();
     }
 }

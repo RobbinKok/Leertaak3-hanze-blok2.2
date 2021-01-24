@@ -44,6 +44,7 @@ public class DataRunnable implements Runnable {
         NodeList nodeList = root.getElementsByTagName("MEASUREMENT");
 
         for (int i = 0; i < nodeList.getLength(); i++) {
+
             Node node = nodeList.item(i);
             Element element = (Element) node;
 
