@@ -96,92 +96,18 @@ public class Measurement{
         pstmt.execute();
     }
 
-    /**
-     * TODO: GET ALL MEASUREMENTS
-     *
-     * @param db
-     * @return
-     */
-    public static ArrayList<Measurement> get(DB_connect db) throws SQLException {
-        ArrayList<Measurement> measurements = new ArrayList<>();
-        db.query("SELECT * FROM `measurement`");
-
-        ResultSet rs = db.getResult();
-        while (rs.next()){
-            Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
-            measurements.add(measurement);
-
-        }
-        return measurements;
-    }
-
-    public static ArrayList<Measurement> getHum(DB_connect db) throws SQLException {
-        ArrayList<Measurement> measurements = new ArrayList<>();
-        db.query("SELECT * FROM `measurement` ORDER BY `dew_point` DESC LIMIT 10 ");
+    public static ArrayList<String> getPage(DB_connect db, String query) throws SQLException {
+        ArrayList<String> measurements = new ArrayList<>();
+        db.query(query);
 
         ResultSet rs = db.getResult();
         while (rs.next()) {
-            System.out.println(rs.getMetaData().getColumnTypeName(3));
-            //Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
-       //     measurement.setStation(new Station(rs.getObject("station")));
-            //measurements.add(measurement);
-        }
-
-        return measurements;
-    }
-
-    public static ArrayList<Measurement>getWeatherStationData(DB_connect db) throws SQLException {
-        ArrayList<Measurement> measurements = new ArrayList<>();
-        db.query("SELECT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed FROM measurement JOIN stations ON stations.stn = measurement.station_stn LIMIT 5 ");
-
-        ResultSet rs = db.getResult();
-
-
-        while (rs.next()) {
-            //System.out.println(rs.getMetaData().getColumnCount());
-            Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
+            String measurement = new Measurement().convertFromResultSet(rs);
             measurements.add(measurement);
         }
-        return measurements;
-    }
-
-    public static ArrayList<Measurement>getWind(DB_connect db) throws SQLException {
-        ArrayList<Measurement> measurements = new ArrayList<>();
-        db.query("");
-
-        ResultSet rs = db.getResult();
-        while (rs.next()) {
-            //Measurement measurement = (Measurement) new Measurement().convertFromResultSet(rs);
-            //measurements.add(measurement);
-        }
 
         return measurements;
     }
-
-    /**
-     * TODO: MAKE VALID JSON OBJECT
-     * @return
-     */
-    @Override
-    public String toString() {
-        return "{" +
-                "\"station_stn\":\"" + station_stn + '"' +
-                ", \"date\":\"'" + date + '\'' + '"' +
-                ", \"time\":\"'" + time + '\'' + '"' +
-                ", \"temperature\":" + temperature +
-                ", \"dew_point\":" + dew_point +
-                ", \"air_pressure_on_station_level\":" + air_pressure_on_station_level +
-                ", \"air_pressure_on_sea_level\":" + air_pressure_on_sea_level +
-                ", \"visibility\":" + visibility +
-                ", \"wind_speed\":" + wind_speed +
-                ", \"rainfall\":" + rainfall +
-                ", \"snow\":" + snow +
-                ", \"frshtt\":" + frshtt +
-                ", \"cldc\":" + cldc +
-                ", \"wnddir\":" + wnddir +
-                '}';
-    }
-
 
     /**
      * TODO: IMPLEMENT
