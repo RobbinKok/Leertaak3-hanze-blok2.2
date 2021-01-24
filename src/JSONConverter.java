@@ -11,14 +11,13 @@ public class JSONConverter {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
-        int counter = 1;
-        for (Object item : arrayList) {
-            stringBuilder.append(item.toString());
-            if (counter < arrayList.size()) {
-                stringBuilder.append(",");
-            }
-            counter++;
+
+        for (int i = 0; i < arrayList.size(); i++)
+        {
+            stringBuilder.append(arrayList.get(i));
+            stringBuilder.append(i < arrayList.size() - 1 ? "," : "");
         }
+
         stringBuilder.append("]");
         return stringBuilder.toString();
     }

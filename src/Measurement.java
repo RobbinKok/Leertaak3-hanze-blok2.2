@@ -1,12 +1,9 @@
 import org.w3c.dom.Element;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
-public class Measurement implements Model{
+public class Measurement{
 
     private static String STATION_STN = "STN";
     private static String DATE = "DATE";
@@ -53,7 +50,8 @@ public class Measurement implements Model{
 
     private Element element;
 
-    public Measurement() { }
+    public Measurement() {
+    }
 
     public Measurement(Element element) {
         this.element = element;
@@ -78,26 +76,6 @@ public class Measurement implements Model{
         String result = element.getElementsByTagName(prefix).item(0).getTextContent();
         return result.isEmpty() ? "0" : result;
     }
-
-
-
-    public Measurement(int station_stn, String date, String time, Double temperature, Double dew_point, Double air_pressure_on_station_level, Double air_pressure_on_sea_level, Double visibility, Double wind_speed, Double rainfall, Double snow, int frshtt, Double cldc, int wnddir) {
-        this.station_stn = station_stn;
-        this.date = date;
-        this.time = time;
-        this.temperature = temperature;
-        this.dew_point = dew_point;
-        this.air_pressure_on_station_level = air_pressure_on_station_level;
-        this.air_pressure_on_sea_level = air_pressure_on_sea_level;
-        this.visibility = visibility;
-        this.wind_speed = wind_speed;
-        this.rainfall = rainfall;
-        this.snow = snow;
-        this.frshtt = frshtt;
-        this.cldc = cldc;
-        this.wnddir = wnddir;
-    }
-
 
     public void create(DB_connect db) throws SQLException {
         PreparedStatement pstmt = db.prepareQuery("INSERT INTO `measurement`(`station_stn`, `date`, `temperature`, `dew_point`, `air_pressure_on_station_level`, `air_pressure_on_sea_level`, `visibility`, `wind_speed`, `rainfall`, `snow`, `frshtt`, `cldc`, `wnddir`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -207,12 +185,38 @@ public class Measurement implements Model{
 
     /**
      * TODO: IMPLEMENT
+     *
      * @param resultSet
      * @return
      * @throws SQLException
      */
-    @Override
-    public Model convertFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Measurement(resultSet.getInt("station_stn"), resultSet.getString("date"), resultSet.getDouble("temperature"),resultSet.getDouble("dew_point"),resultSet.getDouble("air_pressure_on_station_level"),resultSet.getDouble("air_pressure_on_sea_level"),resultSet.getDouble("visibility"),resultSet.getDouble("wind_speed"),resultSet.getDouble("rainfall"),resultSet.getDouble("snow"),resultSet.getInt("frshtt"),resultSet.getDouble("cldc"),resultSet.getInt("wnddir"));
+    public String convertFromResultSet(ResultSet resultSet) throws SQLException {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("{");
+        for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+            String name = resultSet.getMetaData().getColumnName(i);
+
+            stringBuilder.append(i == 1 ? "\"" : ", \"");
+            stringBuilder.append(name);
+            stringBuilder.append("\":");
+
+            switch (resultSet.getMetaData().getColumnTypeName(i)) {
+                case "INT UNSIGNED":
+                case "INT":
+                    stringBuilder.append(resultSet.getInt(name));
+                    break;
+                case "VARCHAR":
+                case "DATETIME":
+                    stringBuilder.append("\"");
+                    stringBuilder.append(resultSet.getString(name));
+                    stringBuilder.append("\"");
+                    break;
+                case "DOUBLE":
+                    stringBuilder.append(resultSet.getDouble(name));
+                    break;
+            }
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }

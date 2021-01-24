@@ -11,6 +11,11 @@ public class WebServerRequest {
     private String method; // voor later gebruik
     private String url;
 
+    private final String measurements = "SELECT * FROM `measurement`";
+    private final String hum = "SELECT * FROM `measurement` ORDER BY `dew_point` DESC LIMIT 10 ";
+    private final String station_data = "SELECT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed FROM measurement JOIN stations ON stations.stn = measurement.station_stn LIMIT 5";
+    private final String stations = "SELECT * FROM `stations`";
+
     public WebServerRequest(String method, String url) {
         this.method = method;
         this.url = url;
@@ -33,16 +38,16 @@ public class WebServerRequest {
                 // vergeet niet eerst add request te doen op de webserver
                 // belangrijk: HIER NIET QUERYS NEER GOOIEN
                 case "/stations":
-                    result = new JSONConverter(Station.get(db_connect)).toString();
+                    result = new JSONConverter(Measurement.getPage(db_connect, stations)).toString();
                     break;
                 case "/measurements":
-                    result = new JSONConverter(Measurement.get(db_connect)).toString();
+                    result = new JSONConverter(Measurement.getPage(db_connect, measurements)).toString();
                     break;
                 case "/hum":
-                    result = new JSONConverter(Measurement.getHum(db_connect)).toString();
+                    result = new JSONConverter(Measurement.getPage(db_connect, hum)).toString();
                     break;
                 case "/station-data":
-                    result = new JSONConverter(Measurement.getWeatherStationData(db_connect)).toString();
+                    result = new JSONConverter(Measurement.getPage(db_connect, station_data)).toString();
                     break;
                 default:
                     result = "404";
