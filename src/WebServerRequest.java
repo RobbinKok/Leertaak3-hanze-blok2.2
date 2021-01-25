@@ -13,7 +13,7 @@ public class WebServerRequest {
 
     private final String measurements = "SELECT * FROM `measurement`";
     private  final String windspeed = "SELECT DISTINCT(stations.name), AVG(measurement.wind_speed) FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country LIKE '%CZECH REPUBLIC%' GROUP BY stations.name";
-    private final String hum = "SELECT DISTINCT(stations.stn), stations.name, measurement.temperature, measurement.dew_point, 100 -5 * (measurement.temperature - measurement.dew_point) AS Humidity FROM measurement JOIN stations ON stations.stn = measurement.station_stn ORDER BY Humidity DESC LIMIT 10";
+    private final String hum = "SELECT DISTINCT(stations.stn), stations.name, measurement.temperature, measurement.dew_point, 100 - (5 * (measurement.temperature - measurement.dew_point)) AS Humidity FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE measurement.dew_point != 0 ORDER BY Humidity DESC LIMIT 10 ";
     private final String station_data = "SELECT DISTINCT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed, measurement.wnddir FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country=\"CZECH REPUBLIC\" OR stations.country=\"GERMANY\" OR stations.country=\"AUSTRIA\" OR stations.country=\"POLAND\" OR stations.country=\"SLOVAKIA\" GROUP BY stations.stn ";
     private final String stations = "SELECT * FROM `stations`";
 
