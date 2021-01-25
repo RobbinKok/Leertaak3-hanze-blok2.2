@@ -22,6 +22,7 @@ public class WebServerRequest {
     }
 
     public void handleRequest(HttpExchange httpExchange) throws IOException, SQLException {
+        httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
         String response = this.result(httpExchange);
         httpExchange.sendResponseHeaders(200, response.getBytes().length);//response code and length
         OutputStream os = httpExchange.getResponseBody();
