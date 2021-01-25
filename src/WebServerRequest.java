@@ -13,8 +13,8 @@ public class WebServerRequest {
 
     private final String measurements = "SELECT * FROM `measurement`";
     private  final String windspeed = "SELECT DISTINCT(stations.name), AVG(measurement.wind_speed) FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country LIKE '%CZECH REPUBLIC%' GROUP BY stations.name";
-    private final String hum = "SELECT * FROM `measurement` ORDER BY `dew_point` DESC LIMIT 10 ";
-    private final String station_data = "SELECT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed FROM measurement JOIN stations ON stations.stn = measurement.station_stn LIMIT 5";
+    private final String hum = "SELECT DISTINCT(stations.stn), stations.name, measurement.temperature, measurement.dew_point, 100 -5 * (measurement.temperature - measurement.dew_point) AS Humidity FROM measurement JOIN stations ON stations.stn = measurement.station_stn ORDER BY Humidity DESC LIMIT 10";
+    private final String station_data = "SELECT DISTINCT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country=\"CZECH REPUBLIC\" GROUP BY stations.stn";
     private final String stations = "SELECT * FROM `stations`";
 
     public WebServerRequest(String method, String url) {
@@ -53,6 +53,7 @@ public class WebServerRequest {
                     break;
                 case "/windspeed":
                     result = new JSONConverter(Measurement.getPage(db_connect, windspeed)).toString();
+                    break;
                 default:
                     result = "404";
                     break;
