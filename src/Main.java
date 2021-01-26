@@ -16,6 +16,7 @@ public class Main {
             webServer.addRequest("GET", "/windspeed");
             webServer.addRequest("POST", "/login");
             webServer.start();
+
             new Server(db);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
