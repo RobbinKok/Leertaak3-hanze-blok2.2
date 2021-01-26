@@ -49,7 +49,9 @@ public class DataRunnable implements Runnable {
             Element element = (Element) node;
 
             Measurement measurement = new Measurement(element);
-            measurement.create(db_connect);
+            if (measurement.dew_point <= measurement.temperature) { // check if the dew point is valid
+                measurement.create(db_connect);
+            }
         }
 
         thread.interrupt();
