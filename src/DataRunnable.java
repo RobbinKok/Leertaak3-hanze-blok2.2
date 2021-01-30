@@ -49,6 +49,19 @@ public class DataRunnable implements Runnable {
             Element element = (Element) node;
 
             Measurement measurement = new Measurement(element);
+            String s = "SELECT temperature from measurement where station_stn = " + measurement.station_stn + " LIMIT 30";
+            db_connect.query(s);
+            ArrayList<Double> metingen =  new ArrayList<>();
+
+            ResultSet rs = db_connect.getResult();
+            while (rs.next()) {
+                metingen.add(rs.getDouble("temperature"));
+            }
+
+
+            System.out.println(metingen);
+
+
             if (measurement.dew_point <= measurement.temperature) { // check if the dew point is valid
                 measurement.create(db_connect);
             }

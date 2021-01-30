@@ -44,7 +44,7 @@ class Worker implements Runnable {
 
 
                 if (line.equals("</WEATHERDATA>")) {
-                    DataRunnable dataRunnable = new DataRunnable("biem", stringBuilder.toString(), db);
+                    DataRunnable dataRunnable = new DataRunnable("datarunnable", stringBuilder.toString(), db);
                     dataRunnable.start();
                 }
             }
