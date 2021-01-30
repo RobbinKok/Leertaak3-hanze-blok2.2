@@ -1,10 +1,8 @@
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WebServerRequest {
 
@@ -24,6 +22,7 @@ public class WebServerRequest {
 
     public void handleRequest(HttpExchange httpExchange) throws IOException, SQLException {
         httpExchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+        httpExchange.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
         String response = this.result(httpExchange);
         httpExchange.sendResponseHeaders(200, response.getBytes().length);//response code and length
         OutputStream os = httpExchange.getResponseBody();
@@ -31,7 +30,7 @@ public class WebServerRequest {
         os.close();
     }
 
-    private String result(HttpExchange httpExchange) throws SQLException {
+    private String result(HttpExchange httpExchange) throws SQLException, IOException {
         String result = "";
         DB_connect db_connect = new DB_connect();
         if (httpExchange.getRequestMethod().equals("GET")) {
@@ -61,8 +60,8 @@ public class WebServerRequest {
         } else if (httpExchange.getRequestMethod().equals("POST")) {
             switch (url) {
                 case "/login":
-                    // todo: create login (richard)
-                    result = "success";
+                    HashMap<String, String> map = getData(httpExchange);
+                    result = new User(map.get("username"), map.get("password")).login() ? "success" : "failed";
                     break;
                 default:
                     result = "404";
@@ -74,5 +73,18 @@ public class WebServerRequest {
 
         db_connect.close();
         return result;
+    }
+
+
+    public HashMap<String, String> getData(HttpExchange httpExchange) throws IOException {
+        BufferedReader httpInput = new BufferedReader(new InputStreamReader(
+                httpExchange.getRequestBody(), "UTF-8"));
+        StringBuilder in = new StringBuilder();
+        String input;
+        while ((input = httpInput.readLine()) != null) {
+            in.append(input).append(" ");
+        }
+        httpInput.close();
+        return new JSONParser(in).toObject();
     }
 }
