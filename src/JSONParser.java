@@ -5,6 +5,10 @@ public class JSONParser {
     StringBuilder stringBuilder = new StringBuilder();
 
 
+    public JSONParser(String string) {
+        this.stringBuilder = new StringBuilder(string);
+    }
+
     public JSONParser(StringBuilder stringBuilder) {
         this.stringBuilder = stringBuilder;
     }

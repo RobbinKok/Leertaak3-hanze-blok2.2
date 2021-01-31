@@ -15,6 +15,9 @@ public class Main {
             webServer.addRequest("GET", "/station-data");
             webServer.addRequest("GET", "/windspeed");
             webServer.addRequest("POST", "/login");
+            webServer.addRequest("POST", "/download/humidity");
+            webServer.addRequest("POST", "/download/windspeed");
+            webServer.addRequest("POST", "/download/map");
             webServer.start();
 
             new Server(db);
