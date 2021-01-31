@@ -33,11 +33,9 @@ public class WebServerRequest {
     private String result(HttpExchange httpExchange) throws SQLException, IOException {
         String result = "";
         DB_connect db_connect = new DB_connect();
+        CSVGenerator csvGenerator = new CSVGenerator(db_connect);
         if (httpExchange.getRequestMethod().equals("GET")) {
             switch (url) {
-                // in deze switch kunnen er nieuwe urls worden toegevoegd
-                // vergeet niet eerst add request te doen op de webserver
-                // belangrijk: HIER NIET QUERYS NEER GOOIEN
                 case "/stations":
                     result = new JSONConverter(Measurement.getPage(db_connect, stations)).toString();
                     break;
@@ -62,6 +60,15 @@ public class WebServerRequest {
                 case "/login":
                     HashMap<String, String> map = getData(httpExchange);
                     result = new User(map.get("username"), map.get("password")).login() ? "success" : "failed";
+                    break;
+                case "/download/humidity": // top 10 humidity
+                    result = csvGenerator.getCSV(Measurement.getPage(db_connect, hum), 0);
+                    break;
+                case "/download/windspeed": // windspeed data op CZECH REPUBLIC
+                    result = csvGenerator.getCSV(Measurement.getPage(db_connect, windspeed), 1);
+                    break;
+                case "/download/map": // all data of the map
+                    result = csvGenerator.getCSV(Measurement.getPage(db_connect, station_data), 2);
                     break;
                 default:
                     result = "404";
