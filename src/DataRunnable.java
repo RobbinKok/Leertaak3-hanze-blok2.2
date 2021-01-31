@@ -59,8 +59,17 @@ public class DataRunnable implements Runnable {
             }
 
 
-            System.out.println(metingen);
+            //System.out.println("penis " + metingen);
 
+            if (measurement.temperature <= getAverage(metingen) - 3)
+            {
+                measurement.temperature = getAverage(metingen) - 1.5;
+            }
+            else if (measurement.temperature >= getAverage(metingen) + 3){
+                measurement.temperature = getAverage(metingen) + 1.5;
+            }
+
+            //System.out.println(metingen);
 
             if (measurement.dew_point <= measurement.temperature) { // check if the dew point is valid
                 measurement.create(db_connect);
@@ -70,7 +79,18 @@ public class DataRunnable implements Runnable {
         thread.interrupt();
     }
 
-    public void start() {
+    private static double getAverage(ArrayList<Double> array) {
+        int counter = 0;
+        double sum = 0;
+        for (double d : array) {
+            sum = sum + d;
+            counter++;
+        }
+
+        return sum / counter;
+    }
+
+        public void start() {
         System.out.println("Starting thread: " + this.name);
         if (this.thread == null) {
             thread = new Thread(this, this.name);
