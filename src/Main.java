@@ -19,6 +19,7 @@ public class Main {
             webServer.addRequest("POST", "/download/humidity");
             webServer.addRequest("POST", "/download/windspeed");
             webServer.addRequest("POST", "/download/map");
+            webServer.addRequest("POST", "/download/past_7_days");
             webServer.start();
 
             new Server(db);

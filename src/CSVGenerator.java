@@ -1,13 +1,13 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CSVGenerator {
+
+    private static final String directory = "export";
 
     private DB_connect db_connect;
     private int type = 0;
@@ -21,6 +21,7 @@ public class CSVGenerator {
      * type 0 = hum
      * type 1 = windspeed
      * type 2 = map
+     * type 3 = past 7 days
      *
      * @param data
      * @param type
@@ -45,7 +46,7 @@ public class CSVGenerator {
             }
             String[] body = new String[map.size()];
             int bodyCounter = 0;
-            for (String m: map.values()) {
+            for (String m : map.values()) {
                 body[bodyCounter] = m;
                 bodyCounter++;
             }
@@ -58,31 +59,30 @@ public class CSVGenerator {
     }
 
     private String createCSV(List<String[]> dataLines) throws FileNotFoundException {
-        /*
-        TODO:
-        - change name on given type
-        - add datetime to name
-        - push to the right location
-        - return a string of that location
-         */
-        File csvOutputFile = new File("TEST.CSV");
-        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-            dataLines.stream()
-                    .map(this::convertToCSV)
-                    .forEach(pw::println);
-        }
-        System.out.println(csvOutputFile.exists());
+        File f = new File(CSVGenerator.directory);
+        if (f.exists() && f.isDirectory()) {
+            String name = getName();
+            File csvOutputFile = new File(directory + "/" + name + ".CSV");
+            try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
+                dataLines.stream()
+                        .map(this::convertToCSV)
+                        .forEach(pw::println);
+            }
+            System.out.println();
 
+
+            return csvOutputFile.getAbsolutePath();
+        }
         return "";
     }
 
-    public String convertToCSV(String[] data) {
+    private String convertToCSV(String[] data) {
         return Stream.of(data)
                 .map(this::escapeSpecialCharacters)
                 .collect(Collectors.joining(","));
     }
 
-    public String escapeSpecialCharacters(String data) {
+    private String escapeSpecialCharacters(String data) {
         String escapedData = data.replaceAll("\\R", " ");
         if (data.contains(",") || data.contains("\"") || data.contains("'")) {
             data = data.replace("\"", "\"\"");
@@ -93,5 +93,29 @@ public class CSVGenerator {
             escapedData = escapedData.substring(1);
         }
         return escapedData;
+    }
+
+    private String getName() {
+        String name = "export_";
+        switch (type) {
+            case 0:
+                name += "humidity";
+                break;
+            case 1:
+                name += "windspeed";
+                break;
+            case 2:
+                name += "map";
+                break;
+            case 3:
+                name += "czech_republic_past_7_days";
+                break;
+            default:
+                break;
+        }
+
+        name += "_";
+        name += new Date().toString().toLowerCase(Locale.ROOT).replace(" ", "_");
+        return name;
     }
 }
