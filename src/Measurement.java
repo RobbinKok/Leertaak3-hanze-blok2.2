@@ -71,10 +71,6 @@ public class Measurement{
         this.wnddir = Integer.parseInt(this.getTextFromElement(WNDDIR));
     }
 
-    public Measurement(int station_stn, String date, double temperature, double dew_point, double air_pressure_on_station_level, double air_pressure_on_sea_level, double visibility, double wind_speed, double rainfall, double snow, int frshtt, double cldc, int wnddir) {
-    }
-
-
     private String getTextFromElement(String prefix) {
         String result = element.getElementsByTagName(prefix).item(0).getTextContent();
         return result.isEmpty() ? "0" : result;

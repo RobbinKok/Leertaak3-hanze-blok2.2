@@ -1,5 +1,8 @@
 import com.sun.net.httpserver.HttpExchange;
+import org.w3c.dom.ls.LSOutput;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -8,9 +11,16 @@ public class WebServerRequest {
 
     private String method; // voor later gebruik
     private String url;
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    String formattedNow = now.format(formatter);
+    String formattedWeekAgo = weekAgo.format(formatter);
+
 
     private final String measurements = "SELECT * FROM `measurement`";
     private  final String windspeed = "SELECT DISTINCT(stations.name), AVG(measurement.wind_speed) FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country LIKE '%CZECH REPUBLIC%' GROUP BY stations.name";
+    private final String dataSevenDAys = "SELECT stations.name, stations.country, temperature, dew_point, 100 - (5 * (temperature - dew_point)) AS humidity FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country LIKE '%CZECH REPUBLIC%' AND measurement.date BETWEEN '" + formattedWeekAgo +"' AND '" + formattedNow + "'";
     private final String hum = "SELECT DISTINCT(name), country, stn, temperature, dew_point, 100 - (5 * (temperature - dew_point)) AS humidity FROM `europe` WHERE dew_point < temperature AND 'humidity' < 100  ORDER BY `humidity`  DESC LIMIT 10";
     private final String station_data = "SELECT DISTINCT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed, measurement.wnddir FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country=\"CZECH REPUBLIC\" OR stations.country=\"GERMANY\" OR stations.country=\"AUSTRIA\" OR stations.country=\"POLAND\" OR stations.country=\"SLOVAKIA\" GROUP BY stations.stn ";
     private final String stations = "SELECT * FROM `stations`";
@@ -50,6 +60,9 @@ public class WebServerRequest {
                     break;
                 case "/windspeed":
                     result = new JSONConverter(Measurement.getPage(db_connect, windspeed)).toString();
+                    break;
+                case "/week":
+                    result = new JSONConverter(Measurement.getPage(db_connect, dataSevenDAys)).toString();
                     break;
                 default:
                     result = "404";
