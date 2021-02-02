@@ -82,7 +82,7 @@ public class CSVGenerator {
 
             return csvOutputFile.getAbsolutePath();
         }
-        return "";
+        return "directory does not exists";
     }
 
     private String convertToCSV(String[] data) {
