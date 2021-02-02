@@ -62,16 +62,21 @@ public class CSVGenerator {
         return createCSV(dataLines);
     }
 
-    private String createCSV(List<String[]> dataLines) throws FileNotFoundException {
+    private String createCSV(List<String[]> dataLines) {
         File f = new File(this.directory);
         if (f.exists() && f.isDirectory()) {
             String name = getName();
-            File csvOutputFile = new File(directory + "/" + name + ".CSV");
-            try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-                dataLines.stream()
-                        .map(this::convertToCSV)
-                        .forEach(pw::println);
+            String location = directory + name + ".CSV";
+            File csvOutputFile = new File(location);
+            PrintWriter pw = null;
+            try {
+                pw = new PrintWriter(csvOutputFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
+            dataLines.stream()
+                    .map(this::convertToCSV)
+                    .forEach(pw::println);
             System.out.println();
 
 
@@ -120,6 +125,8 @@ public class CSVGenerator {
 
         name += "_";
         name += new Date().toString().toLowerCase(Locale.ROOT).replace(" ", "_");
+
+        name = name.replaceAll(":", "-");
         return name;
     }
 }
