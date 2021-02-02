@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -7,13 +8,16 @@ import java.util.stream.Stream;
 
 public class CSVGenerator {
 
-    private static final String directory = "export";
+    private String directory = "export";
 
     private DB_connect db_connect;
     private int type = 0;
 
-    public CSVGenerator(DB_connect db_connect) {
+    public CSVGenerator(DB_connect db_connect) throws IOException {
         this.db_connect = db_connect;
+
+        Config config = new Config();
+        directory = config.get("export_directory");
     }
 
 
@@ -59,7 +63,7 @@ public class CSVGenerator {
     }
 
     private String createCSV(List<String[]> dataLines) throws FileNotFoundException {
-        File f = new File(CSVGenerator.directory);
+        File f = new File(this.directory);
         if (f.exists() && f.isDirectory()) {
             String name = getName();
             File csvOutputFile = new File(directory + "/" + name + ".CSV");

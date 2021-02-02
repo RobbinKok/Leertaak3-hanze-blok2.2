@@ -3,7 +3,7 @@ import java.sql.SQLException;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         DB_connect db = new DB_connect();
         try {
             // todo: thread aanmaken voor Server en voor Webserver zodat het tegelijk kan runnen.

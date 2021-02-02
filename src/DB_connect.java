@@ -1,13 +1,22 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.sql.*;
+import java.util.Properties;
 
 class DB_connect {
     private Connection connection;
     public Statement stmt;
     private ResultSet rs;
 
-    public DB_connect() {
+    public DB_connect() throws IOException {
+
+        Config config = new Config();
+
         try {
-            this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/unwdmi?useSSL=false", "root", "root");
+            this.connection = DriverManager.getConnection(config.get("connection_string"), config.get("user"), config.get("password"));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
