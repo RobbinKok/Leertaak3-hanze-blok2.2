@@ -13,13 +13,17 @@ public class WebServerRequest {
     private String url;
     LocalDateTime now = LocalDateTime.now();
     LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+    LocalDateTime hourAgo = LocalDateTime.now().minusHours(1);
+    LocalDateTime twoHourAgo = LocalDateTime.now().minusHours(2);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     String formattedNow = now.format(formatter);
     String formattedWeekAgo = weekAgo.format(formatter);
+    String formattedHourAgo = hourAgo.format(formatter);
+    String formattedTwoHoursAgo = twoHourAgo.format(formatter);
 
 
     private final String measurements = "SELECT * FROM `measurement`";
-    private final String windspeed = "SELECT DISTINCT(stations.name), AVG(measurement.wind_speed) FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country LIKE '%CZECH REPUBLIC%' GROUP BY stations.name";
+    private final String windspeed = "SELECT DISTINCT(stations.name), AVG(measurement.wind_speed) FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country LIKE '%CZECH REPUBLIC%' AND measurement.date Between '" + formattedTwoHoursAgo + "' AND '" + formattedHourAgo + "' GROUP BY stations.name";
     private final String dataSevenDAys = "SELECT stations.name, stations.country, temperature, dew_point, 100 - (5 * (temperature - dew_point)) AS humidity FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country LIKE '%CZECH REPUBLIC%' AND measurement.date BETWEEN '" + formattedWeekAgo + "' AND '" + formattedNow + "'";
     private final String hum = "SELECT DISTINCT(name), country, stn, temperature, dew_point, 100 - (5 * (temperature - dew_point)) AS humidity FROM `europe` WHERE dew_point < temperature AND 'humidity' < 100  ORDER BY `humidity`  DESC LIMIT 10";
     private final String station_data = "SELECT DISTINCT stations.stn, stations.name, stations.longitude, stations.latitude, stations.elevation, measurement.station_stn, measurement.temperature, measurement.dew_point, measurement.wind_speed, measurement.wnddir FROM measurement JOIN stations ON stations.stn = measurement.station_stn WHERE stations.country=\"CZECH REPUBLIC\" OR stations.country=\"GERMANY\" OR stations.country=\"AUSTRIA\" OR stations.country=\"POLAND\" OR stations.country=\"SLOVAKIA\" GROUP BY stations.stn ";

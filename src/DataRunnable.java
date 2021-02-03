@@ -17,6 +17,7 @@ public class DataRunnable implements Runnable {
     private String name;
     private String data;
     private DB_connect db_connect;
+    private int number = 0;
 
     public DataRunnable(String name, String data, DB_connect db_connect) {
         this.name = name;
@@ -34,6 +35,7 @@ public class DataRunnable implements Runnable {
     }
 
     private void read() throws ParserConfigurationException, IOException, SAXException, SQLException {
+
         DocumentBuilderFactory factory =
                 DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -48,6 +50,7 @@ public class DataRunnable implements Runnable {
         NodeList nodeList = root.getElementsByTagName("MEASUREMENT");
 
         for (int i = 0; i < nodeList.getLength(); i++) {
+
 
             Node node = nodeList.item(i);
             Element element = (Element) node;
@@ -77,9 +80,9 @@ public class DataRunnable implements Runnable {
 
             if (measurement.dew_point <= measurement.temperature) { // check if the dew point is valid
                 measurement.create(db_connect);
+
             }
         }
-
         thread.interrupt();
     }
 
